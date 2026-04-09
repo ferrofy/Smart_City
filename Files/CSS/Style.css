@@ -144,7 +144,6 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 
 .text-info { color: #00d4ff !important; }
 
-/* Stats Card Styling */
 #stat-scooter, #stat-auto, #stat-car, #stat-bus {
     font-family: 'Orbitron', sans-serif;
     color: var(--text-primary);
@@ -157,7 +156,6 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 .ag-activation { border-left-color: #007bff; color: #99ccff; }
 .log-footer i { font-size: 0.8rem; }
 
-/* Live Traffic Map Additions */
 .traffic-tracks {
     position: relative;
     width: 100%;

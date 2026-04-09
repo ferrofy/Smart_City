@@ -3,25 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Smooth Flow | AI Anti-Gravity Traffic System</title>
-    <!-- Bootstrap CSS -->
+    <title>Project Smart Flow</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="Files/CSS/Style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dark-theme">
     <div class="background-glow"></div>
-    
+
     <nav class="navbar navbar-dark bg-transparent border-bottom border-secondary mb-4">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <i class="fas fa-microchip text-info me-2"></i>
-                <span class="fw-bold tracking-widest text-uppercase">Project Smooth Flow</span>
+                <span class="fw-bold tracking-widest text-uppercase">Project Smart Flow</span>
             </a>
             <div class="d-flex align-items-center">
                 <span id="system-clock" class="text-secondary small me-3">00:00:00</span>
@@ -30,10 +26,9 @@
         </div>
     </nav>
 
-    <!-- Live 2D Traffic Map -->
     <div class="container-fluid px-4 mb-4">
         <div class="glass-card p-2" id="live-traffic-map">
-            <h6 class="text-secondary small mb-2"><i class="fas fa-satellite me-1"></i> Live 2D Anti-Gravity Radar Feed</h6>
+            <h6 class="text-secondary small mb-2"><i class="fas fa-satellite me-1"></i> Live 2D Radar Feed</h6>
             <div class="traffic-tracks w-100 position-relative rounded overflow-hidden" style="height: 120px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);">
                 <div class="lane-track absolute w-100 border-bottom border-secondary" style="height: 30px; top: 0;" id="map-track-1"></div>
                 <div class="lane-track absolute w-100 border-bottom border-secondary" style="height: 30px; top: 30px;" id="map-track-2"></div>
@@ -45,41 +40,118 @@
 
     <div class="container-fluid px-4 pb-5">
         <div class="row g-4">
-            <!-- Left Side: Lane Status & Controls -->
             <div class="col-lg-8">
                 <div class="row g-3" id="lane-container">
-                    {% for i in range(1, 5) %}
                     <div class="col-md-6">
-                        <div class="glass-card lane-card" id="lane-card-{{ i }}">
+                        <div class="glass-card lane-card" id="lane-card-1">
                             <div class="lane-header d-flex justify-content-between">
-                                <h5 class="m-0">Lane {{ i }}</h5>
+                                <h5 class="m-0">Lane 1</h5>
                                 <div class="d-flex align-items-center">
-                                    <button class="btn btn-sm btn-outline-danger me-2 flood-btn" data-lane="{{ i }}">
+                                    <button class="btn btn-sm btn-outline-danger me-2 flood-btn" data-lane="1">
                                         <i class="fas fa-water me-1"></i> Flood
                                     </button>
-                                    <div class="signal-indicator" id="signal-{{ i }}"></div>
+                                    <div class="signal-indicator" id="signal-1"></div>
                                 </div>
                             </div>
                             <div class="lane-body py-3">
                                 <div class="density-label small text-secondary">Occupancy</div>
                                 <div class="d-flex align-items-baseline mb-1">
-                                    <div class="h3 fw-bold m-0" id="lane-{{ i }}-val">0%</div>
-                                    <div class="ms-2 small text-secondary" id="lane-{{ i }}-mass">0.0t</div>
+                                    <div class="h3 fw-bold m-0" id="lane-1-val">0%</div>
+                                    <div class="ms-2 small text-secondary" id="lane-1-mass">0.0t</div>
                                 </div>
                                 <div class="progress progress-dark" style="height: 6px;">
-                                    <div class="progress-bar" id="lane-{{ i }}-progress" role="progressbar" style="width: 0%"></div>
+                                    <div class="progress-bar" id="lane-1-progress" role="progressbar" style="width: 0%"></div>
                                 </div>
                             </div>
-                            <div class="lane-footer d-flex justify-content-between align-items-center">
-                                <span class="badge bg-secondary anti-gravity-badge" id="ag-badge-{{ i }}">Anti-Gravity: OFF</span>
-                                <span class="small text-info d-none" id="stress-label-{{ i }}">Testing...</span>
+                            <div class="lane-footer d-flex justify-content-between a lign-items-center">
+                                <span class="badge bg-secondary anti-gravity-badge" id="ag-badge-1">APEX AI: OFF</span>
+                                <span class="small text-info d-none" id="stress-label-1">Testing...</span>
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
+                    <div class="col-md-6">
+                        <div class="glass-card lane-card" id="lane-card-2">
+                            <div class="lane-header d-flex justify-content-between">
+                                <h5 class="m-0">Lane 2</h5>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-sm btn-outline-danger me-2 flood-btn" data-lane="2">
+                                        <i class="fas fa-water me-1"></i> Flood
+                                    </button>
+                                    <div class="signal-indicator" id="signal-2"></div>
+                                </div>
+                            </div>
+                            <div class="lane-body py-3">
+                                <div class="density-label small text-secondary">Occupancy</div>
+                                <div class="d-flex align-items-baseline mb-1">
+                                    <div class="h3 fw-bold m-0" id="lane-2-val">0%</div>
+                                    <div class="ms-2 small text-secondary" id="lane-2-mass">0.0t</div>
+                                </div>
+                                <div class="progress progress-dark" style="height: 6px;">
+                                    <div class="progress-bar" id="lane-2-progress" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="lane-footer d-flex justify-content-between align-items-center">
+                                <span class="badge bg-secondary anti-gravity-badge" id="ag-badge-2">APEX AI: OFF</span>
+                                <span class="small text-info d-none" id="stress-label-2">Testing...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="glass-card lane-card" id="lane-card-3">
+                            <div class="lane-header d-flex justify-content-between">
+                                <h5 class="m-0">Lane 3</h5>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-sm btn-outline-danger me-2 flood-btn" data-lane="3">
+                                        <i class="fas fa-water me-1"></i> Flood
+                                    </button>
+                                    <div class="signal-indicator" id="signal-3"></div>
+                                </div>
+                            </div>
+                            <div class="lane-body py-3">
+                                <div class="density-label small text-secondary">Occupancy</div>
+                                <div class="d-flex align-items-baseline mb-1">
+                                    <div class="h3 fw-bold m-0" id="lane-3-val">0%</div>
+                                    <div class="ms-2 small text-secondary" id="lane-3-mass">0.0t</div>
+                                </div>
+                                <div class="progress progress-dark" style="height: 6px;">
+                                    <div class="progress-bar" id="lane-3-progress" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="lane-footer d-flex justify-content-between align-items-center">
+                                <span class="badge bg-secondary anti-gravity-badge" id="ag-badge-3">APEX AI: OFF</span>
+                                <span class="small text-info d-none" id="stress-label-3">Testing...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="glass-card lane-card" id="lane-card-4">
+                            <div class="lane-header d-flex justify-content-between">
+                                <h5 class="m-0">Lane 4</h5>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-sm btn-outline-danger me-2 flood-btn" data-lane="4">
+                                        <i class="fas fa-water me-1"></i> Flood
+                                    </button>
+                                    <div class="signal-indicator" id="signal-4"></div>
+                                </div>
+                            </div>
+                            <div class="lane-body py-3">
+                                <div class="density-label small text-secondary">Occupancy</div>
+                                <div class="d-flex align-items-baseline mb-1">
+                                    <div class="h3 fw-bold m-0" id="lane-4-val">0%</div>
+                                    <div class="ms-2 small text-secondary" id="lane-4-mass">0.0t</div>
+                                </div>
+                                <div class="progress progress-dark" style="height: 6px;">
+                                    <div class="progress-bar" id="lane-4-progress" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="lane-footer d-flex justify-content-between align-items-center">
+                                <span class="badge bg-secondary anti-gravity-badge" id="ag-badge-4">APEX AI: OFF</span>
+                                <span class="small text-info d-none" id="stress-label-4">Testing...</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Simulation Control Center -->
                 <div class="row mt-4">
                     <div class="col-md-6">
                         <div class="glass-card h-100">
@@ -141,7 +213,6 @@
                     </div>
                 </div>
 
-                <!-- Traffic Chart -->
                 <div class="row mt-4">
                     <div class="col-12">
                         <div class="glass-card chart-container">
@@ -157,13 +228,10 @@
                 </div>
             </div>
 
-            <!-- Right Side: Status Logs -->
             <div class="col-lg-4">
                 <div class="glass-card h-100 d-flex flex-column" style="min-height: 600px;">
                     <h5 class="mb-3"><i class="fas fa-terminal me-2"></i>System AI Logs</h5>
-                    <div id="ai-logs" class="log-container flex-grow-1 overflow-auto">
-                        <!-- Logs dynamically populating -->
-                    </div>
+                    <div id="ai-logs" class="log-container flex-grow-1 overflow-auto"></div>
                     <div class="log-footer mt-auto pt-3 border-top border-secondary">
                         <div class="d-flex justify-content-between small text-secondary align-items-center">
                             <span>AI Core Status:</span>
@@ -177,7 +245,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="Files/JS/Dashboard.js"></script>
 </body>
 </html>

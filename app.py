@@ -7,12 +7,10 @@ import time
 app = Flask(__name__)
 CORS(app)
 
-# Initialize simulator
 simulator = TrafficSimulator()
-update_interval = 2.0 # Default 2 seconds
+update_interval = 2.0 
 
 def simulation_worker():
-    """Background task to update simulation state."""
     global update_interval
     while True:
         simulator.update()
@@ -49,10 +47,8 @@ def update_config():
     return jsonify({"status": "error", "message": "Invalid interval"}), 400
 
 if __name__ == '__main__':
-    # Start simulation thread
     sim_thread = threading.Thread(target=simulation_worker, daemon=True)
     sim_thread.start()
     
-    # Run Flask
-    print(f"Project Smooth Flow Backend starting on http://127.0.0.1:5000")
-    app.run(debug=True, port=5000, use_reloader=False)
+    print(f"Project Smooth Flow Backend starting on http://127.0.0.1:5050")
+    app.run(debug=True, port=5050, use_reloader=False)
