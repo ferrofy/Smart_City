@@ -46,9 +46,11 @@ def update_config():
             return jsonify({"status": "success", "interval": update_interval})
     return jsonify({"status": "error", "message": "Invalid interval"}), 400
 
-if __name__ == '__main__':
+if not hasattr(app, "sim_thread_started"):
     sim_thread = threading.Thread(target=simulation_worker, daemon=True)
     sim_thread.start()
-    
-    print(f"Project Smooth Flow Backend starting on http://127.0.0.1:5050")
+    app.sim_thread_started = True
+
+if __name__ == '__main__':
+    print("Project Smooth Flow Backend starting on http://127.0.0.1:5050")
     app.run(debug=True, port=5050, use_reloader=False)
