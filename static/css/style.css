@@ -1,0 +1,219 @@
+:root {
+    --bg-dark: #0a0e14;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --accent-glow: rgba(0, 180, 255, 0.1);
+    --text-primary: #e0e6ed;
+    --text-secondary: #94a3b8;
+    --success-neon: #00ff88;
+    --danger-neon: #ff0055;
+    --warning-neon: #ffcc00;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1.5px;
+}
+
+.background-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, #101c2c 0%, #0a0e14 100%);
+    z-index: -1;
+}
+
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card:hover {
+    border-color: rgba(0, 180, 255, 0.4);
+    box-shadow: 0 8px 40px 0 rgba(0, 180, 255, 0.15);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.progress-dark {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+    background-color: var(--success-neon);
+    box-shadow: 0 0 10px var(--success-neon);
+    transition: width 0.5s ease;
+}
+
+.pulse-badge {
+    animation: pulse 2s infinite;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.signal-indicator {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: var(--success-neon);
+    box-shadow: 0 0 10px var(--success-neon);
+}
+
+.signal-red {
+    background-color: var(--danger-neon);
+    box-shadow: 0 0 10px var(--danger-neon);
+}
+
+.anti-gravity-badge {
+    font-size: 0.7rem;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ag-active {
+    background-color: #007bff !important;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.8);
+    color: white;
+}
+
+.log-container {
+    max-height: 400px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.85rem;
+}
+
+.log-entry {
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-left: 3px solid #3b82f6;
+}
+
+.log-time {
+    color: var(--text-secondary);
+    margin-right: 8px;
+}
+
+.system-msg { border-left-color: #94a3b8; }
+.jam-warning { border-left-color: var(--danger-neon); color: #ff99aa; }
+.flood-btn {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.flood-btn:hover {
+    background-color: var(--danger-neon);
+    color: white;
+    box-shadow: 0 0 10px var(--danger-neon);
+}
+
+.form-range::-webkit-slider-thumb {
+    background: var(--text-info);
+    box-shadow: 0 0 10px var(--text-info);
+}
+
+#speed-slider {
+    height: 6px;
+}
+
+.text-info { color: #00d4ff !important; }
+
+/* Stats Card Styling */
+#stat-scooter, #stat-auto, #stat-car, #stat-bus {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--text-primary);
+}
+
+.border-secondary {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ag-activation { border-left-color: #007bff; color: #99ccff; }
+.log-footer i { font-size: 0.8rem; }
+
+/* Live Traffic Map Additions */
+.traffic-tracks {
+    position: relative;
+    width: 100%;
+}
+.lane-track {
+    position: absolute;
+    width: 100%;
+    left: 0;
+}
+
+.veh-block {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(255,255,255,0.2);
+    animation: drive-across 3s linear forwards;
+    opacity: 0.9;
+}
+
+.veh-car {
+    width: 25px;
+    height: 12px;
+    background-color: #3b82f6;
+    box-shadow: 0 0 10px #3b82f6;
+}
+
+.veh-auto {
+    width: 15px;
+    height: 10px;
+    background-color: #ffcc00;
+    box-shadow: 0 0 8px #ffcc00;
+}
+
+.veh-scooter {
+    width: 8px;
+    height: 6px;
+    background-color: #e0e6ed;
+    border-radius: 50%;
+}
+
+.veh-ambulance {
+    width: 28px;
+    height: 14px;
+    background-color: #00ff88;
+    box-shadow: 0 0 15px #00ff88;
+    animation: drive-across 1.5s linear forwards !important;
+}
+
+.anti-grav-active {
+    animation-duration: 0.8s !important;
+    animation-timing-function: ease-in !important;
+    box-shadow: -10px 0 15px rgba(0, 123, 255, 0.8) !important;
+}
+
+@keyframes drive-across {
+    0% { left: -30px; }
+    100% { left: calc(100% + 30px); }
+}

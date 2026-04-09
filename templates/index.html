@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Smooth Flow | AI Anti-Gravity Traffic System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dark-theme">
+    <div class="background-glow"></div>
+    
+    <nav class="navbar navbar-dark bg-transparent border-bottom border-secondary mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fas fa-microchip text-info me-2"></i>
+                <span class="fw-bold tracking-widest text-uppercase">Project Smooth Flow</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <span id="system-clock" class="text-secondary small me-3">00:00:00</span>
+                <span class="badge bg-success pulse-badge">AI Active</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Live 2D Traffic Map -->
+    <div class="container-fluid px-4 mb-4">
+        <div class="glass-card p-2" id="live-traffic-map">
+            <h6 class="text-secondary small mb-2"><i class="fas fa-satellite me-1"></i> Live 2D Anti-Gravity Radar Feed</h6>
+            <div class="traffic-tracks w-100 position-relative rounded overflow-hidden" style="height: 120px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);">
+                <div class="lane-track absolute w-100 border-bottom border-secondary" style="height: 30px; top: 0;" id="map-track-1"></div>
+                <div class="lane-track absolute w-100 border-bottom border-secondary" style="height: 30px; top: 30px;" id="map-track-2"></div>
+                <div class="lane-track absolute w-100 border-bottom border-secondary" style="height: 30px; top: 60px;" id="map-track-3"></div>
+                <div class="lane-track absolute w-100" style="height: 30px; top: 90px;" id="map-track-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-4 pb-5">
+        <div class="row g-4">
+            <!-- Left Side: Lane Status & Controls -->
+            <div class="col-lg-8">
+                <div class="row g-3" id="lane-container">
+                    {% for i in range(1, 5) %}
+                    <div class="col-md-6">
+                        <div class="glass-card lane-card" id="lane-card-{{ i }}">
+                            <div class="lane-header d-flex justify-content-between">
+                                <h5 class="m-0">Lane {{ i }}</h5>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-sm btn-outline-danger me-2 flood-btn" data-lane="{{ i }}">
+                                        <i class="fas fa-water me-1"></i> Flood
+                                    </button>
+                                    <div class="signal-indicator" id="signal-{{ i }}"></div>
+                                </div>
+                            </div>
+                            <div class="lane-body py-3">
+                                <div class="density-label small text-secondary">Occupancy</div>
+                                <div class="d-flex align-items-baseline mb-1">
+                                    <div class="h3 fw-bold m-0" id="lane-{{ i }}-val">0%</div>
+                                    <div class="ms-2 small text-secondary" id="lane-{{ i }}-mass">0.0t</div>
+                                </div>
+                                <div class="progress progress-dark" style="height: 6px;">
+                                    <div class="progress-bar" id="lane-{{ i }}-progress" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="lane-footer d-flex justify-content-between align-items-center">
+                                <span class="badge bg-secondary anti-gravity-badge" id="ag-badge-{{ i }}">Anti-Gravity: OFF</span>
+                                <span class="small text-info d-none" id="stress-label-{{ i }}">Testing...</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Simulation Control Center -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="glass-card h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0"><i class="fas fa-sliders-h me-2"></i>Control Center</h5>
+                                <button class="btn btn-sm btn-outline-danger fw-bold" id="btn-ambulance" style="box-shadow: 0 0 10px rgba(255,0,85,0.4);">
+                                    <i class="fas fa-ambulance me-1"></i> Emergency
+                                </button>
+                            </div>
+                            <div class="mt-4">
+                                <label class="form-label small text-secondary">Update Frequency (sec)</label>
+                                <div class="d-flex align-items-center">
+                                    <input type="range" class="form-range me-3" id="speed-slider" min="0.5" max="5" step="0.5" value="2">
+                                    <span id="speed-val" class="text-info fw-bold">2.0s</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 d-flex justify-content-around">
+                                <div class="text-center">
+                                    <div class="small text-secondary mb-1">Efficiency</div>
+                                    <div class="h4 fw-bold text-success" id="efficiency-val">100%</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="small text-secondary mb-1">Status</div>
+                                    <div class="h4 fw-bold text-info">OPTIMAL</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="glass-card">
+                            <h5><i class="fas fa-truck-moving me-2"></i>Total Traffic Volume</h5>
+                            <div class="row g-2 mt-2">
+                                <div class="col-6">
+                                    <div class="p-2 border border-secondary rounded text-center">
+                                        <div class="small text-secondary">Scooters</div>
+                                        <div class="fw-bold" id="stat-scooter">0</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 border border-secondary rounded text-center">
+                                        <div class="small text-secondary">Autos</div>
+                                        <div class="fw-bold" id="stat-auto">0</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 border border-secondary rounded text-center">
+                                        <div class="small text-secondary">Cars</div>
+                                        <div class="fw-bold" id="stat-car">0</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 border border-secondary rounded text-center">
+                                        <div class="small text-secondary">Buses</div>
+                                        <div class="fw-bold" id="stat-bus">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Traffic Chart -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="glass-card chart-container">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="m-0"><i class="fas fa-chart-line me-2"></i>Traffic Density Trend</h5>
+                                <div class="small text-secondary">Global AI Performance Monitoring</div>
+                            </div>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="trafficChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Status Logs -->
+            <div class="col-lg-4">
+                <div class="glass-card h-100 d-flex flex-column" style="min-height: 600px;">
+                    <h5 class="mb-3"><i class="fas fa-terminal me-2"></i>System AI Logs</h5>
+                    <div id="ai-logs" class="log-container flex-grow-1 overflow-auto">
+                        <!-- Logs dynamically populating -->
+                    </div>
+                    <div class="log-footer mt-auto pt-3 border-top border-secondary">
+                        <div class="d-flex justify-content-between small text-secondary align-items-center">
+                            <span>AI Core Status:</span>
+                            <span class="text-success d-flex align-items-center">
+                                <i class="fas fa-circle-notch fa-spin me-1"></i> Running
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
