@@ -2,6 +2,7 @@ class Traffic_Simulator {
     constructor(Num_Lanes = 4, Max_Capacity = 20.0) {
         this.Num_Lanes = Num_Lanes;
         this.Max_Capacity = Max_Capacity;
+        this.System_Mode = 'RADAR';
         this.Lanes = {};
          for (let I = 1; I <= Num_Lanes; I++) {
             this.Lanes[I] = {
@@ -43,49 +44,62 @@ class Traffic_Simulator {
         let Total_Occupancy = 0;
         let Total_Departure = 0;
 
+        if (this.System_Mode === 'CAMERA' && window.Camera_Sim_Data) {
+            this.Total_Counts = { ...window.Camera_Sim_Data.counts };
+        }
+
         for (let Lane_Id = 1; Lane_Id <= this.Num_Lanes; Lane_Id++) {
             const Data = this.Lanes[Lane_Id];
-            let New_Vehicle_Mass = 0;
-            let V_Type = null;
 
-            if (this.Stress_Lanes[Lane_Id] > 0) {
-                const Choices = ['Bus', 'Car'];
-                V_Type = Choices[Math.floor(Math.random() * Choices.length)];
-                New_Vehicle_Mass = this.Vehicle_Types[V_Type];
-                this.Total_Counts[V_Type]++;
-                this.Stress_Lanes[Lane_Id]--;
+            if (this.System_Mode === 'CAMERA') {
+                if (window.Camera_Sim_Data) {
+                    Data.Occupancy = window.Camera_Sim_Data.lanes[Lane_Id] || 0;
+                }
+                Total_Occupancy += Data.Occupancy;
             } else {
-                if (Math.random() > 0.4) {
-                    const Keys = Object.keys(this.Vehicle_Types);
-                    V_Type = Keys[Math.floor(Math.random() * Keys.length)];
+                let New_Vehicle_Mass = 0;
+                let V_Type = null;
+
+                if (this.Stress_Lanes[Lane_Id] > 0) {
+                    const Choices = ['Bus', 'Car'];
+                    V_Type = Choices[Math.floor(Math.random() * Choices.length)];
                     New_Vehicle_Mass = this.Vehicle_Types[V_Type];
                     this.Total_Counts[V_Type]++;
+                    this.Stress_Lanes[Lane_Id]--;
+                } else {
+                    if (Math.random() > 0.4) {
+                        const Keys = Object.keys(this.Vehicle_Types);
+                        V_Type = Keys[Math.floor(Math.random() * Keys.length)];
+                        New_Vehicle_Mass = this.Vehicle_Types[V_Type];
+                        this.Total_Counts[V_Type]++;
+                    }
                 }
+
+                if (['Bus', 'Car', 'Auto'].includes(V_Type) && Math.random() > 0.7) {
+                    const Spillover = New_Vehicle_Mass * 0.4;
+                    New_Vehicle_Mass -= Spillover;
+                    const Adj_Lane = Lane_Id < this.Num_Lanes ? Lane_Id + 1 : Lane_Id - 1;
+                    this.Lanes[Adj_Lane].Occupancy = Math.min(this.Max_Capacity, this.Lanes[Adj_Lane].Occupancy + Spillover);
+                }
+
+                if (V_Type === 'Bus' && Math.random() > 0.5) {
+                    this.Hidden_Scooters[Lane_Id] += Math.floor(Math.random() * 3) + 1;
+                }
+
+                let Departure_Rate = !Data.Anti_Gravity ? 0.3 : 1.2;
+                if (Data.Occupancy > 0.8 * this.Max_Capacity) {
+                    Departure_Rate *= 0.5;
+                }
+
+                const Actual_Departure = Math.min(Data.Occupancy, Departure_Rate);
+                Total_Departure += Actual_Departure;
+
+                Data.Occupancy = Math.max(0, Math.min(this.Max_Capacity, Math.round((Data.Occupancy + New_Vehicle_Mass - Actual_Departure) * 100) / 100));
+                Total_Occupancy += Data.Occupancy;
+
+                this.Run_4d_Radar(Lane_Id, Data, Current_Time);
             }
 
-            if (['Bus', 'Car', 'Auto'].includes(V_Type) && Math.random() > 0.7) {
-                const Spillover = New_Vehicle_Mass * 0.4;
-                New_Vehicle_Mass -= Spillover;
-                const Adj_Lane = Lane_Id < this.Num_Lanes ? Lane_Id + 1 : Lane_Id - 1;
-                this.Lanes[Adj_Lane].Occupancy = Math.min(this.Max_Capacity, this.Lanes[Adj_Lane].Occupancy + Spillover);
-            }
-
-            if (V_Type === 'Bus' && Math.random() > 0.5) {
-                this.Hidden_Scooters[Lane_Id] += Math.floor(Math.random() * 3) + 1;
-            }
-
-            let Departure_Rate = !Data.Anti_Gravity ? 0.3 : 1.2;
-            if (Data.Occupancy > 0.8 * this.Max_Capacity) {
-                Departure_Rate *= 0.5;
-            }
-
-            const Actual_Departure = Math.min(Data.Occupancy, Departure_Rate);
-            Total_Departure += Actual_Departure;
-
-            Data.Occupancy = Math.max(0, Math.min(this.Max_Capacity, Math.round((Data.Occupancy + New_Vehicle_Mass - Actual_Departure) * 100) / 100));
-            Total_Occupancy += Data.Occupancy;
-
-            this.Run_4d_Radar(Lane_Id, Data, Current_Time);
             this.Predict_Jam(Lane_Id, Data, Current_Time);
 
             Data.History.push(Math.round((Data.Occupancy / this.Max_Capacity) * 10000) / 100);

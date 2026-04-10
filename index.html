@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="Files/CSS/Style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 </head>
 <body class="dark-theme">
     <div class="background-glow"></div>
@@ -28,7 +30,62 @@
     </nav>
 
     <div class="container-fluid px-4 mb-4">
-        <div class="glass-card p-2" id="live-traffic-map">
+        <div class="d-flex justify-content-center mb-4">
+            <div class="btn-group" role="group" style="box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);">
+                <input type="radio" class="btn-check" name="sim-mode" id="mode-camera" autocomplete="off">
+                <label class="btn btn-outline-info px-4 border-info text-uppercase tracking-widest" for="mode-camera"><i class="fas fa-video me-2"></i>Camera Simulation</label>
+
+                <input type="radio" class="btn-check" name="sim-mode" id="mode-radar" autocomplete="off" checked>
+                <label class="btn btn-outline-success px-4 border-success text-uppercase tracking-widest" for="mode-radar"><i class="fas fa-satellite me-2"></i>Radar Simulation</label>
+            </div>
+        </div>
+
+        <div class="glass-card mb-4 border-info d-none" id="camera-mode-view">
+            <h5 class="mb-3 text-info"><i class="fas fa-video me-2"></i>Live AI Vision Feed</h5>
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="d-flex justify-content-center rounded overflow-hidden" style="min-height: 400px; background: rgba(0,0,0,0.6); border: 1px solid rgba(0, 212, 255, 0.2);">
+                        <div id="vision-placeholder" class="text-secondary text-center align-self-center w-100 py-5">
+                            <i class="fas fa-satellite-dish fa-4x mb-3 text-info pulse-badge"></i>
+                            <h4 class="text-uppercase text-light mt-3">System Awaiting Visual Feed</h4>
+                            <p class="small text-secondary">Upload Traffic Video To Initialize Neural Detection</p>
+                        </div>
+                        <div id="vision-feed-wrapper" class="position-relative d-none" style="max-width: 100%;">
+                            <video id="vision-video" playsinline controls class="rounded" style="max-width: 100%; max-height: 600px; display: block;"></video>
+                            <canvas id="vision-canvas" class="position-absolute top-0 start-0 w-100 h-100" style="pointer-events: none; z-index: 10;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="p-3 border rounded h-100 d-flex flex-column border-secondary" style="background: rgba(0,0,0,0.3);">
+                        <h6 class="text-info text-uppercase mb-3"><i class="fas fa-cogs me-2"></i>Vision Settings</h6>
+                        
+                        <div class="mb-4">
+                            <label class="form-label small text-secondary">Target Feed Source</label>
+                            <input type="file" id="video-upload" class="form-control form-control-sm bg-dark text-light border-secondary" accept="video/*">
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+                            <span class="text-secondary small">Neural Engine Core</span>
+                            <span id="model-status" class="badge bg-warning text-dark"><i class="fas fa-spinner fa-spin me-1"></i> Booting...</span>
+                        </div>
+                        
+                        <div class="mt-auto">
+                            <div class="glass-card mb-3 p-3 text-center" style="border-color: var(--success-neon) !important; background: rgba(0, 255, 136, 0.05);">
+                                <div class="small text-secondary text-uppercase mb-1">Standard Vehicles Tracked</div>
+                                <div class="display-5 text-success fw-bold m-0" id="detected-vehicles" style="text-shadow: 0 0 15px var(--success-neon);">0</div>
+                            </div>
+                            <div class="glass-card p-3 text-center" style="border-color: var(--danger-neon) !important; background: rgba(255, 0, 85, 0.05);">
+                                <div class="small text-secondary text-uppercase mb-1">Emergency Vehicles Detected</div>
+                                <div class="display-5 text-danger fw-bold m-0" id="detected-emergency" style="text-shadow: 0 0 15px var(--danger-neon);">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card p-2 border-success" id="radar-mode-view">
             <h6 class="text-secondary small mb-2"><i class="fas fa-satellite me-1"></i> Live 2D Radar Feed</h6>
             <div class="traffic-tracks w-100 position-relative rounded overflow-hidden" style="height: 120px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);">
                 <div class="lane-track absolute w-100 border-bottom border-secondary" style="height: 30px; top: 0;" id="map-track-1"></div>
@@ -248,5 +305,6 @@
 
     <script src="Files/JS/Traffic_Engine.js"></script>
     <script src="Files/JS/Dashboard.js"></script>
+    <script src="Files/JS/Vision_AI.js"></script>
 </body>
 </html>

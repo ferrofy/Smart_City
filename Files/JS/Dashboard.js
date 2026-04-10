@@ -33,6 +33,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const Mode_Radar = document.getElementById('mode-radar');
+    const Mode_Camera = document.getElementById('mode-camera');
+    const Camera_View = document.getElementById('camera-mode-view');
+    const Radar_View = document.getElementById('radar-mode-view');
+
+    function Update_Sim_Mode() {
+        if (Mode_Camera && Mode_Camera.checked) {
+            Camera_View.classList.remove('d-none');
+            Radar_View.classList.add('d-none');
+            window.Simulator.System_Mode = 'CAMERA';
+        } else if (Mode_Radar && Mode_Radar.checked) {
+            Camera_View.classList.add('d-none');
+            Radar_View.classList.remove('d-none');
+            window.Simulator.System_Mode = 'RADAR';
+        }
+    }
+
+    if (Mode_Radar && Mode_Camera) {
+        Mode_Radar.addEventListener('change', Update_Sim_Mode);
+        Mode_Camera.addEventListener('change', Update_Sim_Mode);
+        Update_Sim_Mode();
+    }
+
     setInterval(() => {
         const Now = new Date();
         System_Clock.innerText = Now.toTimeString().split(' ')[0];
