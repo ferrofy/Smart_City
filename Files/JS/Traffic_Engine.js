@@ -3,7 +3,7 @@ class Traffic_Simulator {
         this.Num_Lanes = Num_Lanes;
         this.Max_Capacity = Max_Capacity;
         this.Lanes = {};
-        for (let I = 1; I <= Num_Lanes; I++) {
+         for (let I = 1; I <= Num_Lanes; I++) {
             this.Lanes[I] = {
                 Occupancy: 0.0,
                 History: [0.0],
