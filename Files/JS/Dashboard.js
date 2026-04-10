@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    window.Simulator = new Traffic_Simulator();
     const Ctx = document.getElementById('trafficChart').getContext('2d');
     const Log_Container = document.getElementById('ai-logs');
     const System_Clock = document.getElementById('system-clock');
@@ -46,63 +47,44 @@ document.addEventListener('DOMContentLoaded', () => {
         Polling_Interval_Id = setInterval(Fetch_Update, Ms);
     }
 
-    Speed_Slider.addEventListener('change', async () => {
+    Speed_Slider.addEventListener('change', () => {
         const Interval = Speed_Slider.value;
         Speed_Val.innerText = `${Interval}s`;
-        try {
-            await fetch('http://127.0.0.1:5050/api/config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ interval: Interval })
-            });
-            Update_Polling(Interval);
-        } catch (Err) {
-            console.error("Config Error:", Err);
-        }
+        Update_Polling(Interval);
     });
 
     document.querySelectorAll('.flood-btn').forEach(Btn => {
-        Btn.addEventListener('click', async () => {
+        Btn.addEventListener('click', () => {
             const Lane_Id = Btn.getAttribute('data-lane');
-            fetch(`http://127.0.0.1:5050/api/stress-test/${Lane_Id}`, { method: 'POST' });
+            window.Simulator.Trigger_Stress_Test(parseInt(Lane_Id));
+            Fetch_Update();
         });
     });
 
     const Ambulance_Btn = document.getElementById('btn-ambulance');
     if (Ambulance_Btn) {
-        Ambulance_Btn.addEventListener('click', async () => {
-            try {
-                const Response = await fetch('http://127.0.0.1:5050/api/ambulance', { method: 'POST' });
-                const Result = await Response.json();
-                if (Result.status === 'success') {
-                    const Lane_Card = document.getElementById(`lane-card-${Result.lane_cleared}`);
-                    if (Lane_Card) {
-                        Lane_Card.style.transition = 'all 0.1s ease';
-                        Lane_Card.style.backgroundColor = 'rgba(255, 0, 85, 0.4)';
-                        Lane_Card.style.boxShadow = '0 0 30px rgba(255, 0, 85, 0.8)';
-                        setTimeout(() => {
-                            Lane_Card.style.backgroundColor = '';
-                            Lane_Card.style.boxShadow = '';
-                            Lane_Card.style.transition = '';
-                        }, 500);
-                        Spawn_Vehicle(Result.lane_cleared, 'ambulance', false);
-                    }
-                }
-            } catch (E) {
-                console.error("Ambulance routing failed:", E);
+        Ambulance_Btn.addEventListener('click', () => {
+            const Lane_Cleared = window.Simulator.Trigger_Ambulance();
+            const Lane_Card = document.getElementById(`lane-card-${Lane_Cleared}`);
+            if (Lane_Card) {
+                Lane_Card.style.transition = 'all 0.1s ease';
+                Lane_Card.style.backgroundColor = 'rgba(255, 0, 85, 0.4)';
+                Lane_Card.style.boxShadow = '0 0 30px rgba(255, 0, 85, 0.8)';
+                setTimeout(() => {
+                    Lane_Card.style.backgroundColor = '';
+                    Lane_Card.style.boxShadow = '';
+                    Lane_Card.style.transition = '';
+                }, 500);
+                Spawn_Vehicle(Lane_Cleared, 'ambulance', false);
             }
+            Fetch_Update();
         });
     }
 
-    async function Fetch_Update() {
-        try {
-            const Response = await fetch('http://127.0.0.1:5050/api/status');
-            if (!Response.ok) return;
-            const Data = await Response.json();
-            Update_UI(Data);
-        } catch (Err) {
-            console.error("Fetch Error:", Err);
-        }
+    function Fetch_Update() {
+        window.Simulator.Update();
+        const Data = window.Simulator.Get_Status();
+        Update_UI(Data);
     }
 
     function Spawn_Vehicle(Lane_Id, Type, Is_Anti_Grav = false) {

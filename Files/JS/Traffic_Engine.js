@@ -182,5 +182,3 @@ class Traffic_Simulator {
         return Status;
     }
 }
-
-module.exports = Traffic_Simulator;
